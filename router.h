@@ -14,6 +14,8 @@ private:
 
 public:
     router();
+    newlink(char name, int weight);
+    removelink(char name);
     ~router();
 };
 
