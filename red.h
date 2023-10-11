@@ -8,14 +8,15 @@ using namespace std;
 class red
 {
 private:
-    map<char, router> matriz_adyacencia;
-    map<char, router> ::iterator iterador_red;
+    map<string, router> matriz_adyacencia;
+    map<string, router> ::iterator iterador_red;
     int routers = 0;
 public:
     red();
-    void newRouter(char key, router name);
-    void rmRouter(char key);
+    void newRouter(string key, router name);
+    void rmRouter(string key);
     void cargarRed(string nombre);
+    void redrandom(int routers, double probability);
     void printRed();
 };
 

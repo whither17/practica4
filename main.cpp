@@ -6,26 +6,8 @@ using namespace std;
 
 int main()
 {
-    red myred;
-    router _router;
-    int peso;
-    char nombre;
-
-        myred.newRouter(_router.nombreRouter(), _router);
-        _router.clearlinks();
-
-    myred.printRed();
-    myred.rmRouter('B');
-    myred.printRed();
-
-
-        _router.newlink(nombre, peso);
-
-
-    myred.newRouter(_router.nombreRouter(), _router);
-     myred.printRed();
-
-
-
+    red h;
+    h.redrandom(8, 7.1);
+    h.printRed();
     return 0;
 }

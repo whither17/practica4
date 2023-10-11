@@ -4,30 +4,30 @@
 using namespace std;
 
 
-router::router()
+router::router(map<string, int> adres_table)
 {
 
 }
 
-void router::newlink(char name, int weight)
+void router::newlink(string name, int weight)
 {
     links++;
-    adress_table.insert(pair<char,int>(name, weight));
+    adress_table.insert(pair<string,int>(name, weight));
 
 }
 
-int router::getlink(char name)
+int router::getlink(string name)
 {
     return adress_table[name];
 }
 
-void router::modlink(char name, int weigth)
+void router::modlink(string name, int weigth)
 {
     adress_table[name] = weigth;
 }
 
 
-void router::removelink(char name)
+void router::removelink(string name)
 {
     links--;
     adress_table.erase(name);
@@ -39,7 +39,7 @@ void router::clearlinks()
     links = 0;
 }
 
-void router::printWt(char name)
+void router::printWt(string name)
 {
     cout << adress_table[name];
 }
@@ -47,14 +47,14 @@ void router::printWt(char name)
 void router::printAdress_table()
 {
     for(iterador = adress_table.begin(); iterador != adress_table.end(); iterador++ ) {
-        cout << iterador -> second << " ";
+        cout << iterador -> second << "fil ";
     }
     cout << endl;
 }
 
-char router::nombreRouter()
+string router::nombreRouter()
 {
-    char nombre;
+    string nombre;
     for(iterador = adress_table.begin(); iterador != adress_table.end(); iterador++ ) {
         if(iterador -> second == 0) {
             nombre = iterador -> first;
