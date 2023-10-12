@@ -2,30 +2,28 @@
 #define ROUTER_H
 #include <iostream>
 #include <map>
-using namespace std;
-
 
 class router {
 
 private:
-    map<string,int> adress_table;
-    map<string,int> ::iterator iterador;
+    std::map<std::string,int> adress_table;
+    std::map<std::string,int> ::iterator iterador;
     int links = 0;
 
 public:
     router();
-    router(map<string, int> adres_table, string name);
-    void newlink(string name, int weight);
-    int getlink(string name);
+    router(std::map<std::string, int> adres_table, std::string name);
+    void newlink(std::string name, int weight);
+    int getlink(std::string name);
     int getlinks();
     void setlinks(int links);
     void setlinks_in(int l);
-    void modlink(string name, int weigth);
-    void removelink(string name);
+    void modlink(std::string name, int weigth);
+    void removelink(std::string name);
     void clearlinks();
-    void printWt(string key);
+    void printWt(std::string key);
     void printAdress_table();
-    string nombreRouter();
+    std::string nombreRouter();
 
     ~router();
 

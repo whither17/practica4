@@ -1,94 +1,24 @@
-#include <iostream>
-#include <fstream>
-#include <map>
-#include <vector>
-#include <random>
-#include "router.h"
 #include "red.h"
-using namespace std;
-
-
-red::red()
-{
-
-}
-
-void red::newRouter(string name, router _router)
-{
-    int weight;
-    routers++;
-    for(iterador_red = matriz_adyacencia.begin(); iterador_red != matriz_adyacencia.end(); iterador_red++ ) {
-        weight = _router.getlink(iterador_red -> first);
-        iterador_red -> second.newlink(name, weight);
-    }
-    matriz_adyacencia.insert(pair<string,router>(name, _router));
-}
-
-void red::rmRouter(string name)
-{
-    routers--;
-    for(iterador_red = matriz_adyacencia.begin(); iterador_red != matriz_adyacencia.end(); iterador_red++ ) {
-        iterador_red -> second.removelink(name);
-    }
-    matriz_adyacencia.erase(name);
-
-}
-
-void red::cargarRed(string name)
-{
-    fstream file;
-    streampos size;
-    string contenido = "";
-    char char_;
-    router _router;
-    int routers_n;
-
-
-    file.open(name, ios::in | ios::binary);
-    if(file.fail()){
-
-        cout << "\n** No se pudo abrir el archivo **\n";
-        exit(EXIT_FAILURE);
-
-    }
-
-    else {
-
-        file.seekg(0, ios::end);
-        size = file.tellg();
-        file.seekg(0, ios::beg);
-
-        for(int i = 0; i  < size; i++) {
-            file.get(char_);
-            contenido += char_;
-        }
-
-        file.close();
-
-        cout << contenido;
-
-    }
-
-}
+#include "database.h"
 
 int peso_random()
 {
 
     int peso;
-    random_device rd;
-    mt19937 generador(rd());
-    uniform_int_distribution<int> distribucion(1, 100);
+    std::random_device rd;
+    std::mt19937 generador(rd());
+    std::uniform_int_distribution<int> distribucion(1, 100);
 
     peso = distribucion(generador);
 
     return peso;
 }
 
-vector<string> nombreAleatorio(int n)
+std::vector<std::string> nombreAleatorio(int n)
 {
     int j;
-    string nombre = "";
-    vector<string> nombres;
+    std::string nombre = "";
+    std::vector<std::string> nombres;
     nombre.resize(n);
 
     for (int i = 1; i <= n; i++) {
@@ -111,16 +41,16 @@ bool conexion_aleatoria(double *probability) {
     bool estado = false;
 
 
-       random_device rd;
-       mt19937 generador(rd());
+    std::random_device rd;
+    std::mt19937 generador(rd());
 
-       bernoulli_distribution distribucion(*probability);
-       estado = distribucion(generador);
+    std::bernoulli_distribution distribucion(*probability);
+    estado = distribucion(generador);
     return estado;
 
 }
 
-void llenar_matriz(map<string, router> &matriz, vector<string> &nombres) {
+void red::inicializar_red(std::vector<std::string> &nombres) {
 
     router r1;
     for(unsigned int i = 0; i < nombres.size(); i++) {
@@ -128,27 +58,130 @@ void llenar_matriz(map<string, router> &matriz, vector<string> &nombres) {
             r1.newlink(nombres[j], -1);
         }
         r1.setlinks(0);
-        matriz.insert(pair<string,router>(nombres[i], r1));
+        matriz_adyacencia.insert(std::pair<std::string,router>(nombres[i], r1));
         r1.clearlinks();
     }
 }
 
-void crear_link(map<string, router> &matriz, string &n1, string &n2, int peso) {
+void red::inicializar_red(std::set<std::string> &nombres, std::set<std::string> ::iterator it) {
 
-    matriz[n1].modlink(n2, peso);
-    matriz[n1].setlinks_in(1);
-    matriz[n2].modlink(n1, peso);
-    matriz[n2].setlinks_in(1);
+    router r1;
+    std::set<std::string> ::iterator it2;
+    for(it = nombres.begin(); it != nombres.end(); it++) {
+        for(it2 = nombres.begin(); it2 != nombres.end(); it2++) {
+            r1.newlink(*it2, -1);
+        }
+        r1.setlinks(0);
+        matriz_adyacencia.insert(std::pair<std::string,router>(*it, r1));
+        r1.clearlinks();
+    }
 }
 
 
+void red::crear_link(std::string &n1, std::string &n2, int peso) {
+
+    matriz_adyacencia[n1].modlink(n2, peso);
+    matriz_adyacencia[n1].setlinks_in(1);
+    matriz_adyacencia[n2].modlink(n1, peso);
+    matriz_adyacencia[n2].setlinks_in(1);
+}
+
+red::red()
+{
+
+}
+
+void red::newRouter(std::string name, router _router)
+{
+    int weight;
+    routers++;
+    for(iterador_red = matriz_adyacencia.begin(); iterador_red != matriz_adyacencia.end(); iterador_red++ ) {
+        weight = _router.getlink(iterador_red -> first);
+        iterador_red -> second.newlink(name, weight);
+    }
+    matriz_adyacencia.insert(std::pair<std::string,router>(name, _router));
+}
+
+void red::rmRouter(std::string name)
+{
+    routers--;
+    for(iterador_red = matriz_adyacencia.begin(); iterador_red != matriz_adyacencia.end(); iterador_red++ ) {
+        iterador_red -> second.removelink(name);
+    }
+    matriz_adyacencia.erase(name);
+
+}
+
+void cant_nodos(std::string &col1, std::string &col2, std::set<std::string> &nodos) {
+
+    int pos = 1;
+
+    for(unsigned int i=0;i<col1.length() && pos>=0;i=pos+1){
+        pos = col1.find('\n',i);
+        nodos.insert(col1.substr(i,pos-i));
+    }
+
+    for(unsigned int i=0;i<col2.length() && pos>=0;i=pos+1){
+        pos = col2.find('\n',i);
+        nodos.insert(col2.substr(i,pos-i));
+    }
+}
+
+void red::conexion_definida(std::vector<std::string> &info) {
+
+    std::vector<std::string> col1, col2, weight;
+    int pos = 1;
+
+    for(unsigned int i=0;i<info[0].length() && pos>=0;i=pos+1){
+        pos = info[0].find('\n',i);
+        col1.push_back(info[0].substr(i,pos-i));
+    }
+    for(unsigned int i=0;i<info[1].length() && pos>=0;i=pos+1){
+        pos = info[1].find('\n',i);
+        col2.push_back(info[1].substr(i,pos-i));
+    }
+    for(unsigned int i=0;i<info[2].length() && pos>=0;i=pos+1){
+        pos = info[2].find('\n',i);
+        weight.push_back(info[2].substr(i,pos-i));
+    }
+
+    for(unsigned int i = 0; i < col1.size(); i++) {
+        crear_link(col1[i], col2[i], std::stoi(weight[i]));
+    }
+
+}
+
+void red::cargarRed(std::string name, std::string ruta)
+{
+
+    std::vector<std::string> info;
+    std::set<std::string> nodos;
+    std::set<std::string> ::iterator it_set;
+    std::string n1;
+    database datos_grafo(name,ruta);
+
+    datos_grafo.set_database_separator(' ');
+    info.push_back(datos_grafo.get_database_columns()[0]);
+    info.push_back(datos_grafo.get_database_columns()[1]);
+    info.push_back(datos_grafo.get_database_columns()[2]);
+    cant_nodos(info[0], info[1], nodos);
+
+    inicializar_red(nodos, it_set);
+    for(it_set = nodos.begin(); it_set != nodos.end(); it_set++) {
+        n1 = *it_set;
+        crear_link(n1,n1, 0);
+    }
+    conexion_definida(info);
+
+}
+
 void red::redrandom(int routers, double probability)
 {
-    string n1, n2;
+    std::string n1, n2;
     int peso = 0;
-    vector<string> nombres = nombreAleatorio(routers);
+    std::vector<std::string> nombres = nombreAleatorio(routers);
 
-    llenar_matriz(matriz_adyacencia, nombres);
+    inicializar_red(nombres);
 
     for(int i = 0; i < routers; i++) {
         n1 = nombres[i];
@@ -158,7 +191,7 @@ void red::redrandom(int routers, double probability)
             if(n1 != n2) {
                 if(conexion_aleatoria(&probability)) {
                     peso = peso_random();
-                    crear_link(matriz_adyacencia, n1, n2, peso);
+                    crear_link(n1, n2, peso);
                     peso = 0;
                 }
             }
@@ -174,7 +207,7 @@ void red::redrandom(int routers, double probability)
         n2 = nombres[routers -1 - k];
         if(matriz_adyacencia[n1].getlinks() == 0) {
             peso = peso_random();
-            crear_link(matriz_adyacencia, n1, n2, peso);
+            crear_link(n1, n2, peso);
             peso = 0;
         }
     }
@@ -182,10 +215,11 @@ void red::redrandom(int routers, double probability)
 
 void red::printRed()
 {
+
     for(iterador_red = matriz_adyacencia.begin(); iterador_red != matriz_adyacencia.end(); iterador_red++ ) {
-        cout << iterador_red -> first << " ";
+        std::cout << iterador_red -> first << " : ";
         iterador_red -> second.printAdress_table();
-        cout << endl;
+        std::cout << std::endl;
     }
 
 }
