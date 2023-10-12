@@ -6,8 +6,8 @@ using namespace std;
 
 int main()
 {
-    red h;
-    h.redrandom(5, 0.7);
-    h.printRed();
+    red myhappyred;
+    myhappyred.redrandom(5, 0.7);
+    myhappyred.printRed();
     return 0;
 }
