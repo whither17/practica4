@@ -7,7 +7,7 @@ using namespace std;
 int main()
 {
     red h;
-    h.redrandom(8, 7.1);
+    h.redrandom(5, 0.7);
     h.printRed();
     return 0;
 }

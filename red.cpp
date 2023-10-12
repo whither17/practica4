@@ -24,13 +24,13 @@ void red::newRouter(string name, router _router)
     matriz_adyacencia.insert(pair<string,router>(name, _router));
 }
 
-void red::rmRouter(string key)
+void red::rmRouter(string name)
 {
     routers--;
     for(iterador_red = matriz_adyacencia.begin(); iterador_red != matriz_adyacencia.end(); iterador_red++ ) {
-        iterador_red -> second.removelink(key);
+        iterador_red -> second.removelink(name);
     }
-    matriz_adyacencia.erase(key);
+    matriz_adyacencia.erase(name);
 
 }
 
@@ -69,13 +69,10 @@ void red::cargarRed(string name)
 
     }
 
-
-
-
-
 }
 
-int peso_random() {
+int peso_random()
+{
 
     int peso;
     random_device rd;
@@ -87,7 +84,8 @@ int peso_random() {
     return peso;
 }
 
-vector<string> nombreAleatorio(int n){
+vector<string> nombreAleatorio(int n)
+{
     int j;
     string nombre = "";
     vector<string> nombres;
@@ -108,23 +106,77 @@ vector<string> nombreAleatorio(int n){
     return nombres;
 }
 
+bool conexion_aleatoria(double *probability) {
+
+    bool estado = false;
+
+
+       random_device rd;
+       mt19937 generador(rd());
+
+       bernoulli_distribution distribucion(*probability);
+       estado = distribucion(generador);
+    return estado;
+
+}
+
+void llenar_matriz(map<string, router> &matriz, vector<string> &nombres) {
+
+    router r1;
+    for(unsigned int i = 0; i < nombres.size(); i++) {
+        for(unsigned int j = 0; j < nombres.size(); j++) {
+            r1.newlink(nombres[j], -1);
+        }
+        r1.setlinks(0);
+        matriz.insert(pair<string,router>(nombres[i], r1));
+        r1.clearlinks();
+    }
+}
+
+void crear_link(map<string, router> &matriz, string &n1, string &n2, int peso) {
+
+    matriz[n1].modlink(n2, peso);
+    matriz[n1].setlinks_in(1);
+    matriz[n2].modlink(n1, peso);
+    matriz[n2].setlinks_in(1);
+}
 
 
 void red::redrandom(int routers, double probability)
 {
-    router r1;
+    string n1, n2;
+    int peso = 0;
     vector<string> nombres = nombreAleatorio(routers);
 
+    llenar_matriz(matriz_adyacencia, nombres);
+
     for(int i = 0; i < routers; i++) {
+        n1 = nombres[i];
+        for(int j = i; j < routers; j++) {
+            n2 = nombres[j];
 
+            if(n1 != n2) {
+                if(conexion_aleatoria(&probability)) {
+                    peso = peso_random();
+                    crear_link(matriz_adyacencia, n1, n2, peso);
+                    peso = 0;
+                }
+            }
+            else {
+                matriz_adyacencia[n1].modlink(n1, peso);
 
-
-        for(int j = 0; j < routers; j++) {
-            r1.newlink(nombres[j], peso_random());
+            }
         }
 
-        matriz_adyacencia.insert(pair<string,router>(nombres[i], r1));
-
+    }
+    for(int k = 0; k < routers; k++) {
+        n1 = nombres[k];
+        n2 = nombres[routers -1 - k];
+        if(matriz_adyacencia[n1].getlinks() == 0) {
+            peso = peso_random();
+            crear_link(matriz_adyacencia, n1, n2, peso);
+            peso = 0;
+        }
     }
 }
 

@@ -4,9 +4,16 @@
 using namespace std;
 
 
-router::router(map<string, int> adres_table)
+
+router::router()
 {
 
+}
+
+router::router(map<string, int> adres_table, string name)
+{
+    adress_table = adres_table;
+    adress_table.insert(pair<string,int>(name, 0));
 }
 
 void router::newlink(string name, int weight)
@@ -19,6 +26,21 @@ void router::newlink(string name, int weight)
 int router::getlink(string name)
 {
     return adress_table[name];
+}
+
+int router::getlinks()
+{
+    return links;
+}
+
+void router::setlinks(int links)
+{
+    this -> links = links;
+}
+
+void router::setlinks_in(int l)
+{
+    links += l;
 }
 
 void router::modlink(string name, int weigth)
@@ -47,7 +69,7 @@ void router::printWt(string name)
 void router::printAdress_table()
 {
     for(iterador = adress_table.begin(); iterador != adress_table.end(); iterador++ ) {
-        cout << iterador -> second << "fil ";
+        cout << iterador -> second << " ";
     }
     cout << endl;
 }

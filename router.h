@@ -14,8 +14,12 @@ private:
 
 public:
     router();
+    router(map<string, int> adres_table, string name);
     void newlink(string name, int weight);
     int getlink(string name);
+    int getlinks();
+    void setlinks(int links);
+    void setlinks_in(int l);
     void modlink(string name, int weigth);
     void removelink(string name);
     void clearlinks();
