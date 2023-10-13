@@ -5,12 +5,6 @@ router::router()
 
 }
 
-router::router(std::map<std::string, int> adres_table, std::string name)
-{
-    adress_table = adres_table;
-    adress_table.insert(std::pair<std::string,int>(name, 0));
-}
-
 void router::newlink(std::string name, int weight)
 {
     links++;
