@@ -1,5 +1,6 @@
 #ifndef ROUTER_H
 #define ROUTER_H
+#include <algorithm>
 #include <iostream>
 #include <map>
 
@@ -16,6 +17,9 @@ private:
     std::map<std::string,int> adress_table;
     std::map<std::string,int> ::iterator iterador;
     int links = 0;
+
+    void fill_segment(int n, int *matrix);
+    int *dynamic_memory_P2(int n);
 
 public:
     router(); //constructor;
@@ -43,6 +47,8 @@ public:
 *@return: int.
 */
 
+    void setname(std::string name);
+    void set_name(std::string *old_name, std::string *new_name);
     void setlinks(int links);
 /*Funcion que recibe un entero y sustituye el valor del
 *atributo links por el valor ingresado.
@@ -104,6 +110,7 @@ public:
 @parametros: void.
 @return: std::string.
 */
+    int *getweights(int sizematrix);
 
     ~router(); //destructor
 

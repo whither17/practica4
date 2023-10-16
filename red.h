@@ -88,7 +88,16 @@ y establece los enlaces entre los distintos nodos indicados en el archivo.
 *@parametros: std::string &, std::string& , int.
 *@return: void.
 */
+    std::string getposi2(int position);
+    int getposition(std::string name);
+    void printrute(std::string rawrute);
+    void printweight(int weight,std::string inicio, std::string final);
+    void matrixDijkstra(int cantrouters);
+    std::map<std::string, int> dijkstra(int V,int **graph, int src,int final);
+    void print_matrix(int n, int **matrix);
 
+    int minDistance(int V, int dist[], bool sptSet[]);
+    void delete_P2(int **matrix, int n);
 public:
     red();
 
@@ -107,6 +116,31 @@ public:
 *@parametros: std::string.
 *@return: void.
 */
+    void mod_link(std::string *n1, std::string *n2, int weight);
+/*Funcion que recibe dos string * (nombres de los nodos), un int y modifica en la tabla
+*de enrutamiento el valor de [*n1], [*n2] por int (-1 equivale a desconectados).
+*
+*@parametros: std::string *, std::string *, int.
+*@return: void.
+*/
+
+    void get_names(std::vector<std::string> *nombres);
+/*Funcion que recibe un std::vector<std::string> *
+*e ingresa los nombres de los nodos en la matriz de adyacencia
+*en el vector.
+*
+*@parametros: std::vector<std::string> *.
+*@return: void.
+*/
+
+    void set_name(std::string *old_name, std::string *new_name);
+/*Funcion que recibe dos string * (nombres de los nodos) y sustituye en la tabla
+*de enrutamiento la clave *old_name por *new_name conservando el contenido y la asociatividad.
+*
+*@parametros: std::string *, std::string *.
+*@return: void.
+*/
+
     void cargarRed(std::string nombre, std::string ruta);
 /*Funcion que recibe dos std::string (nombre del archivo y ruta) y
 *carga el grafo presente en el archivo.
@@ -115,7 +149,7 @@ public:
 *@return: void.
 */
 
-    void redrandom(int routers, double probability);
+    void redrandom(int routers, double *probability);
 /*Funcion que genera un grafo aleatorio dado una probabilidad y una
 *cantidad de nodos determinada.
 *
@@ -131,6 +165,7 @@ public:
 *@return: void.
 */
 
+    void ruta_optima();
 };
 
 #endif // RED_H
